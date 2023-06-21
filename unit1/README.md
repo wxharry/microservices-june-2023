@@ -26,3 +26,17 @@ Run messager-db-primary in docker container
 Consul display Key/Value
 <img width="944" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/15a35253-56c0-4f13-ad45-8cb4e5d34ae3">
 
+### Challenge 3
+
+Create 4 messenger instances
+<img width="1187" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/f722db93-a318-438e-af57-f8290d899b92">
+
+Build messenger-lb docker image
+<img width="1178" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/239da921-103d-4435-9015-2a141c81c45a">
+
+Create messenger-lb instance
+<img width="1373" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/5fc4a855-64bd-4324-9d3d-21068482910b">
+
+Check nginx configuration  
+<img width="799" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/ff8d5aca-1a46-4a3b-9685-a5d8d6873aaa">
+
