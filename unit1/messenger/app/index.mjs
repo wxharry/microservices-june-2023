@@ -14,7 +14,9 @@ import { query, runInTransaction } from "./db/index.mjs";
 import { dispatchEvent, NewMessageEvent } from "./events/index.mjs";
 
 app.use(cors());
-app.use(express.json());
+// app.use(express.json()); // without limit
+// app.use(express.json({ limit: "20b" })); // with 20b limit
+app.use(express.json({ limit: config.get("jsonBodyLimit") })); // get limit from env
 app.use(router);
 
 /* ======
