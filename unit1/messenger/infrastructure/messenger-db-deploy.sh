@@ -5,7 +5,14 @@ PORT=5432
 POSTGRES_USER=postgres
 # NOTE: Never do this in a real-world deployment. Store passwords
 # only in an encrypted secrets store.
+# Because we’re focusing on other concepts in this tutorial, we
+# set the password this way here for convenience.
 POSTGRES_PASSWORD=postgres
+
+# Migration user
+POSTGRES_MIGRATOR_USER=messenger_migrator
+# NOTE: As above, never do this in a real deployment.
+POSTGRES_MIGRATOR_PASSWORD=migrator_password
 
 docker run \
   --rm \
@@ -35,9 +42,17 @@ curl -X PUT --silent --output /dev/null --show-error --fail http://localhost:850
   -H "Content-Type: application/json" \
   -d "${POSTGRES_USER}"
 
-echo "Register key messenger-db-password-never-do-this\n"
 curl -X PUT --silent --output /dev/null --show-error --fail http://localhost:8500/v1/kv/messenger-db-password-never-do-this \
   -H "Content-Type: application/json" \
   -d "${POSTGRES_PASSWORD}"
+
+echo "Register key messenger-db-application-user\n"
+curl -X PUT --silent --output /dev/null --show-error --fail http://localhost:8500/v1/kv/messenger-db-migrator-user \
+  -H "Content-Type: application/json" \
+  -d "${POSTGRES_MIGRATOR_USER}"
+
+curl -X PUT --silent --output /dev/null --show-error --fail http://localhost:8500/v1/kv/messenger-db-migrator-password-never-do-this \
+  -H "Content-Type: application/json" \
+  -d "${POSTGRES_MIGRATOR_PASSWORD}"
 
 printf "\nDone registering postgres details with Consul\n"
