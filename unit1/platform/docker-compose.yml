@@ -1,0 +1,48 @@
+---
+version: "3.9"
+services:
+  rabbitmq:
+    image: rabbitmq:3.11.4-management-alpine
+    container_name: rabbitmq
+    hostname: microservices_march
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbit-data:/var/lib/rabbitmq/
+      - rabbit-log:/var/log/rabbitmq/
+    networks:
+      - mm_2023
+
+  consul-server:
+    image: hashicorp/consul:1.14.4
+    container_name: consul-server
+    restart: always
+    volumes:
+      - ./consul/server.json:/consul/config/server.json:ro
+    networks:
+      - mm_2023
+    ports:
+      - 8500:8500
+      - 8600:8600/tcp
+      - 8600:8600/udp
+    command: agent
+
+  consul-client:
+    image: hashicorp/consul:1.14.4
+    container_name: consul-client
+    restart: always
+    volumes:
+      - ./consul/client.json:/consul/config/client.json:ro
+    networks:
+      - mm_2023
+    command: agent
+
+volumes:
+  rabbit-data:
+  rabbit-log:
+
+networks:
+  mm_2023:
+    name: mm_2023
+    driver: bridge
