@@ -64,12 +64,30 @@ const config = convict({
     env: "AMQPPORT",
     arg: "amqpport",
   },
-  // jsonBodyLimit: {
-  //   doc: `The max size (with unit included) that will be parsed by the JSON middleware. Unit parsing is done by the https://www.npmjs.com/package/bytes library. ex: "100kb"`,
-  //   format: String,
-  //   default: null,
-  //   env: "JSON_BODY_LIMIT", // get variable "JSON_BODY_LIMIT" from env
-  // },
+  jsonBodyLimit: {
+    doc: `The max size (with unit included) that will be parsed by the JSON middleware. Unit parsing is done by the https://www.npmjs.com/package/bytes library. ex: "100kb"`,
+    format: String,
+    default: null,
+    env: "JSON_BODY_LIMIT", // get variable "JSON_BODY_LIMIT" from env
+  },
+  consulServiceName: {
+    doc: "The name by which the service is registered in Consul. If not specified, the service is not registered",
+    format: "*",
+    default: null,
+    env: "CONSUL_SERVICE_NAME",
+  },
+  consulHost: {
+    doc: "The host where the Consul client runs",
+    format: String,
+    default: "consul-client",
+    env: "CONSUL_HOST",
+  },
+  consulPort: {
+    doc: "The port for the Consul client",
+    format: "port",
+    default: 8500,
+    env: "CONSUL_PORT",
+  },
 });
 
 const env = config.get("env");

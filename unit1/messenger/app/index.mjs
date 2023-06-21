@@ -2,6 +2,7 @@ import config from "./config/config.mjs";
 import express from "express";
 import Router from "express-promise-router";
 import cors from "cors";
+import { register as registerConsul } from "./consul/index.mjs";
 
 /* =================
    SERVER SETUP
@@ -272,8 +273,12 @@ async function setViewHorizon(req, res) {
 /* =================
    SERVER START
 ================== */
-app.listen(port, () => {
+// app.listen(port, () => {
+//   console.log(`messenger_service listening on port ${port}`);
+// });
+app.listen(port, async () => {
   console.log(`messenger_service listening on port ${port}`);
+  registerConsul();
 });
 
 export default app;
