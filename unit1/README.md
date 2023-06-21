@@ -40,3 +40,20 @@ Create messenger-lb instance
 Check nginx configuration  
 <img width="799" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/ff8d5aca-1a46-4a3b-9685-a5d8d6873aaa">
 
+### Challenge 4
+
+Add Key/Value to Consul
+<img width="878" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/fecddba6-6061-49e9-9807-f37f7dd5ee00">
+
+Create `messenger-migrator`  
+<img width="679" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/fd95a779-80c0-4d7f-b996-5392da8b056b">
+
+Migration  
+<img width="901" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/3d6f08e5-5a5c-4081-a391-a99cb7ef1576">
+
+Send a message
+<img width="1449" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/71fe411f-50ed-4ea5-b430-7a5686d6b04a">
+
+
+Check message history  
+<img width="756" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/2d8064a2-0671-4aa0-9c43-e28e3ee43bd0">
