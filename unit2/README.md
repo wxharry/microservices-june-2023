@@ -16,3 +16,7 @@
 1. Docker compose with bad hardcode
 <img width="778" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/96f3bed4-e60b-4eb3-8c26-ee8d820e4f63">
 
+### Challenge 2
+1. use docker inspect to find out the JWT in ENV
+<img width="1251" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/31286cf4-252a-4e83-92b9-7cd5a76d9b84">
+
