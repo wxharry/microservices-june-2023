@@ -27,3 +27,9 @@
 2. look for JWT in extract, and found nothing
 <img width="675" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/34fa3817-ada6-4ce5-bec7-689df30657b6">
 
+### Challenge 4
+1. Check for Success message
+<img width="374" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/a2125316-72a3-4fb8-a001-d00b4b4dad1f">
+
+2. Check for Success message with token2
+<img width="325" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/885a2a30-c0dd-4439-b094-018f074cb85e">
