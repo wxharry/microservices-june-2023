@@ -20,3 +20,10 @@
 1. use docker inspect to find out the JWT in ENV
 <img width="1251" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/31286cf4-252a-4e83-92b9-7cd5a76d9b84">
 
+### Challenge 3
+1. use docker inspect to look for JWT in ENV, but found nothing
+<img width="1222" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/5ceb8ac5-67ed-4939-b1ba-509d49cc41eb">
+
+2. look for JWT in extract, and found nothing
+<img width="675" alt="image" src="https://github.com/wxharry/microservices-june-2023/assets/39271899/34fa3817-ada6-4ce5-bec7-689df30657b6">
+
