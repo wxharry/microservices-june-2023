@@ -1,0 +1,5 @@
+FROM nginxplus
+
+COPY default.conf /etc/nginx/conf.d/default.conf
+COPY secret.jwk /etc/nginx/conf/
+COPY index.html /usr/share/nginx/html/

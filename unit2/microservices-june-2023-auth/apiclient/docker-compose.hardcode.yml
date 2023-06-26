@@ -1,0 +1,8 @@
+---
+version: "3.9"
+services:
+  apiclient:
+    build: .
+    image: apiclient
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
