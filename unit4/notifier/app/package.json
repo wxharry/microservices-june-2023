@@ -1,0 +1,52 @@
+{
+  "name": "notifier",
+  "description": "Notifier app for the for the NGINX Microservices March demo architecture",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=19.0.0"
+  },
+  "type": "module",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs",
+    "test": "NODE_ENV=test mocha --exit",
+    "refresh-db": "PGDATABASE=postgres CREATE_DB_NAME=notifier_dev node scripts/create-db.mjs && node scripts/create-schema.mjs && node scripts/create-seed-data.mjs",
+    "refresh-db-test": "NODE_ENV=test PGDATABASE=postgres CREATE_DB_NAME=notifier_test node scripts/create-db.mjs && NODE_ENV=test node scripts/create-schema.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microservices-march/notifier.git"
+  },
+  "keywords": [
+    "notifier",
+    "microservices",
+    "demo",
+    "architecture"
+  ],
+  "contributors": [
+    {
+      "name": "Alessandro Fael Garcia"
+    },
+    {
+      "name": "Javier Evans"
+    }
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/microservices-march/notifier/issues"
+  },
+  "homepage": "https://github.com/microservices-march/notifier#readme",
+  "dependencies": {
+    "amqplib": "^0.10.3",
+    "convict": "^6.2.4",
+    "express": "^4.18.2",
+    "express-promise-router": "^4.1.1",
+    "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "prettier": "2.8.3",
+    "sinon": "^15.0.1",
+    "supertest": "^6.3.3"
+  }
+}

@@ -1,0 +1,36 @@
+---
+version: "3.9"
+services:
+  rabbitmq:
+    image: rabbitmq:3.11.4-management-alpine
+    container_name: rabbitmq
+    hostname: microservices_march
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbit-data:/var/lib/rabbitmq/
+      - rabbit-log:/var/log/rabbitmq/
+    networks:
+      - mm_2023
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.41
+    container_name: jaeger
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+    environment:
+      COLLECTOR_OTLP_ENABLED: true
+    networks:
+      - mm_2023
+
+volumes:
+  rabbit-data:
+  rabbit-log:
+
+networks:
+  mm_2023:
+    name: mm_2023
+    driver: bridge

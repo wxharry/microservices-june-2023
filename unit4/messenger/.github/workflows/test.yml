@@ -1,0 +1,94 @@
+---
+name: Run CI/CD tests
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  api-test:
+    name: Run API tests
+    runs-on: ubuntu-22.04
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: messenger_test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      rabbitmq:
+        image: rabbitmq:3.11.4-management-alpine
+        ports:
+          - 5672:5672
+    steps:
+      - name: Check out the codebase
+        uses: actions/checkout@v3
+
+      - name: Read .tool-versions
+        uses: marocchino/tool-versions-action@v1
+        id: versions
+
+      - name: Set up NodeJS ${{ steps.versions.outputs.nodejs }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.versions.outputs.nodejs }}
+
+      - name: Install NPM dependencies
+        run: cd app && npm install
+
+      - name: Prepare PostgreSQL database
+        run: cd app && npm run refresh-db-test
+
+      - name: Test API
+        run: cd app && npm test
+        env:
+          NODE_ENV: test
+
+  build-and-push:
+    name: Build and push Docker image
+    needs: api-test
+    runs-on: ubuntu-22.04
+    env:
+      IMAGE_NAME: ${{ github.repository }}
+      REGISTRY: ghcr.io
+    steps:
+      - name: Check out the codebase
+        uses: actions/checkout@v3
+
+      - name: Read .tool-versions
+        uses: marocchino/tool-versions-action@v1
+        id: versions
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        uses: docker/metadata-action@v4
+        id: meta
+        env:
+          DOCKER_METADATA_PR_HEAD_SHA: true
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{ is_default_branch }}
+            type=ref,event=branch,suffix=-{{ sha }}
+            type=ref,event=pr,prefix=pr,suffix=-{{ sha }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: app/.
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: NODE_VERSION=${{ steps.versions.outputs.nodejs }}

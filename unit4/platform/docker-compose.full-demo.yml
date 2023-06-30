@@ -1,0 +1,153 @@
+# This Docker Compose file sets up the services
+# and shared infrastructure on a common network called
+# `mm_network`. Because of this, all services
+# are able to communicate by using the value of their `container_name` key as the hostname.
+
+# Only the ports for the `ingress`, `rabbitmq`, `notifier-db`, and `messenger-db` services are mapped to the host.
+# For the `ingress` service, this is to make the backend services accessible.
+# The other ports are exposed to the host for the purposes of accessing their
+# GUI admin interfaces in the case of `rabbitmq`, and to allow the connection of
+# database management tools in the case of the two postgres databases.
+---
+version: "3.9"
+services:
+  ingress:
+    build: ./ingress
+    container_name: ingress
+    # The ingress service depends on the hostnames of the messenger application
+    # So it needs to start once those are created.
+    depends_on:
+      - messenger
+      - notifier
+    environment:
+      - NGINX_UPSTREAM=messenger
+    # The ingress service is the only service that has ports exposed out.
+    ports:
+      - 80:80
+    networks:
+      - mm_network
+
+  rabbitmq:
+    image: rabbitmq:3.11.4-management-alpine
+    container_name: rabbitmq
+    hostname: microservices_march
+    # The healthcheck is critical, because we need the RabbitMQ
+    # server to actually be up and accepting connections before we
+    # start the applications, otherwise they will crash.
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbit-data:/var/lib/rabbitmq/
+      - rabbit-log:/var/log/rabbitmq/
+    networks:
+      - mm_network
+
+  messenger:
+    image: microservices_demo/messenger
+    container_name: messenger
+    # This uses the `Dockerfile` in the `messenger` repository
+    # to build the container for the service.
+    # If you've made changes to the `messenger` application,
+    # run `docker-compose -f docker-compose.full-demo.yml build`
+    # to make sure this file is using the updated container.
+    build:
+      context: ../messenger/app
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      notifier-db:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: postgres
+      CREATE_DB_NAME: messenger
+      PGHOST: messenger-db
+      PGPORT: 5432
+      AMQPHOST: rabbitmq
+      AMQPPORT: 5672
+      PORT: 4000
+    networks:
+      - mm_network
+
+  notifier:
+    image: microservices_demo/notifier
+    container_name: notifier
+    build:
+      context: ../notifier/app
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      notifier-db:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: postgres
+      CREATE_DB_NAME: notifier
+      PGHOST: notifier-db
+      # Note that we are running this database on a nonstandard port to avoid conflicts
+      PGPORT: 5433
+      AMQPHOST: rabbitmq
+      AMQPPORT: 5672
+      PORT: 5000
+    networks:
+      - mm_network
+
+  messenger-db:
+    image: postgres:15
+    container_name: messenger-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: messenger
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    volumes:
+      - messenger-db-data:/var/lib/postgresql/data/pgdata
+    networks:
+      - mm_network
+
+  notifier-db:
+    image: postgres:15
+    container_name: notifier-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: notifier
+      PGDATA: /var/lib/postgresql/data/pgdata
+      PGPORT: 5433
+    ports:
+      - 5433:5433
+    volumes:
+      - notifier-db-data:/var/lib/postgresql/data/pgdata
+    networks:
+      - mm_network
+
+# Docker volumes are used for all services
+# that persist data to avoid permissions issues on some systems.
+volumes:
+  rabbit-data:
+  rabbit-log:
+  messenger-db-data:
+  notifier-db-data:
+
+networks:
+  mm_network:
+    name: mm_network
+    driver: bridge
