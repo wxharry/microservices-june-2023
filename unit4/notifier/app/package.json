@@ -37,6 +37,11 @@
   },
   "homepage": "https://github.com/microservices-march/notifier#readme",
   "dependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.36.4",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.36.0",
+    "@opentelemetry/resources": "^1.10.0",
+    "@opentelemetry/sdk-node": "^0.36.0",
+    "@opentelemetry/semantic-conventions": "^1.10.0",
     "amqplib": "^0.10.3",
     "convict": "^6.2.4",
     "express": "^4.18.2",
